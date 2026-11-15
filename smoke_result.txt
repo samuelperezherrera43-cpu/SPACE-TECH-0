@@ -1,0 +1,11 @@
+
+> orbital-eva@1.0.0 smoke
+> node scripts/smoke.mjs
+
+Error en el smoke test: TimeoutError: Waiting failed: 15000ms exceeded
+    at new WaitTask (file:///C:/Users/Usuario01/Desktop/juegodemo/node_modules/puppeteer-core/lib/esm/puppeteer/common/WaitTask.js:45:34)
+    at IsolatedWorld.waitForFunction (file:///C:/Users/Usuario01/Desktop/juegodemo/node_modules/puppeteer-core/lib/esm/puppeteer/api/Realm.js:22:26)
+    at CdpFrame.waitForFunction (file:///C:/Users/Usuario01/Desktop/juegodemo/node_modules/puppeteer-core/lib/esm/puppeteer/api/Frame.js:568:43)
+    at CdpFrame.<anonymous> (file:///C:/Users/Usuario01/Desktop/juegodemo/node_modules/puppeteer-core/lib/esm/puppeteer/util/decorators.js:101:27)
+    at CdpPage.waitForFunction (file:///C:/Users/Usuario01/Desktop/juegodemo/node_modules/puppeteer-core/lib/esm/puppeteer/api/Page.js:1430:37)
+    at file:///C:/Users/Usuario01/Desktop/juegodemo/scripts/smoke.mjs:76:14

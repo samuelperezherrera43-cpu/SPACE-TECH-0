@@ -1,0 +1,33 @@
+{
+  "frames": 302,
+  "durationMs": 5007.399999991059,
+  "fps": 60.31074010475281,
+  "frameMsMean": 16.57847682118219,
+  "frameMsP50": 16.600000000002183,
+  "frameMsP95": 16.899999999997817,
+  "frameMsP99": 17,
+  "frameMsMin": -4.40000000298096,
+  "frameMsMax": 17.599999999998545,
+  "drawCalls": 0,
+  "triangles": 0,
+  "points": 0,
+  "lines": 0,
+  "geometries": 372,
+  "textures": 43,
+  "programs": 56,
+  "pixelRatio": 1,
+  "canvas": [
+    1280,
+    800
+  ],
+  "state": "surface",
+  "activeBreaches": 3,
+  "quality": "standard",
+  "glRenderer": "ANGLE (Intel, Intel(R) UHD Graphics 620 (0x00005917) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "glVendor": "Google Inc. (Intel)",
+  "label": "f1-lunar-v9",
+  "view": "exterior",
+  "world": "moon",
+  "timestamp": "2026-11-14T15:10:15.555Z",
+  "errors": []
+}

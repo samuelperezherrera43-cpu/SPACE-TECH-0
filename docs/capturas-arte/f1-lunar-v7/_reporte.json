@@ -1,0 +1,104 @@
+{
+  "world": "moon",
+  "built": "all",
+  "scenes": [
+    {
+      "name": "01-aproximacion",
+      "calls": 325,
+      "triangles": 105685
+    },
+    {
+      "name": "02-tres-cuartos",
+      "calls": 527,
+      "triangles": 124543
+    },
+    {
+      "name": "03-aerea",
+      "calls": 539,
+      "triangles": 125273
+    },
+    {
+      "name": "04-habitat",
+      "calls": 325,
+      "triangles": 105685
+    },
+    {
+      "name": "05-control",
+      "calls": 298,
+      "triangles": 101717
+    },
+    {
+      "name": "06-energia",
+      "calls": 273,
+      "triangles": 94871
+    },
+    {
+      "name": "07-plataforma",
+      "calls": 395,
+      "triangles": 97225
+    },
+    {
+      "name": "08-esclusa",
+      "calls": 498,
+      "triangles": 124575
+    }
+  ],
+  "modules": [
+    {
+      "id": "habitat",
+      "meshes": 12,
+      "calls": 19
+    },
+    {
+      "id": "control",
+      "meshes": 13,
+      "calls": 20
+    },
+    {
+      "id": "lab",
+      "meshes": 11,
+      "calls": 12
+    },
+    {
+      "id": "greenhouse",
+      "meshes": 8,
+      "calls": 4
+    },
+    {
+      "id": "power",
+      "meshes": 9,
+      "calls": 15
+    },
+    {
+      "id": "storage",
+      "meshes": 10,
+      "calls": 16
+    },
+    {
+      "id": "workshop",
+      "meshes": 11,
+      "calls": 13
+    },
+    {
+      "id": "o2",
+      "meshes": 6,
+      "calls": 10
+    },
+    {
+      "id": "water",
+      "meshes": 5,
+      "calls": 6
+    },
+    {
+      "id": "antenna",
+      "meshes": 7,
+      "calls": 12
+    },
+    {
+      "id": "garage",
+      "meshes": 10,
+      "calls": 15
+    }
+  ],
+  "errors": []
+}

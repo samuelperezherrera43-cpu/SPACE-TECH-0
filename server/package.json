@@ -1,0 +1,29 @@
+{
+  "name": "space-tech-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Servidor autoritativo Colyseus para el multijugador cooperativo de SPACE-TECH.",
+  "type": "module",
+  "main": "index.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "health": "node scripts/health.mjs",
+    "build:sdk": "node scripts/build-sdk.mjs",
+    "test": "node --test tests/multiplayer.test.mjs"
+  },
+  "dependencies": {
+    "@colyseus/schema": "5.0.48",
+    "@colyseus/ws-transport": "0.18.5",
+    "colyseus": "0.18.12",
+    "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "@colyseus/sdk": "0.18.10",
+    "esbuild": "^0.28.2",
+    "qrcode-generator": "^2.0.4"
+  }
+}

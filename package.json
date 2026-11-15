@@ -1,0 +1,35 @@
+{
+  "name": "orbital-eva",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Juego 3D en tercera persona de reparación en gravedad cero. Three.js + cannon-es, sin build step, listo para Cloudflare Pages.",
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "share": "node scripts/share.mjs",
+    "check": "node scripts/check.mjs",
+    "smoke": "node scripts/smoke.mjs",
+    "bench": "node scripts/bench.mjs",
+    "build:interior": "node scripts/build-interior.mjs",
+    "deploy": "npx wrangler pages deploy public",
+    "server:install": "npm --prefix server install",
+    "server": "npm --prefix server start",
+    "server:dev": "npm --prefix server run dev",
+    "server:test": "npm --prefix server test",
+    "server:health": "npm --prefix server run health",
+    "server:build-sdk": "npm --prefix server run build:sdk"
+  },
+  "keywords": [
+    "threejs",
+    "cannon-es",
+    "webgl",
+    "game",
+    "cloudflare-pages"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "cannon-es": "^0.20.0",
+    "puppeteer-core": "^23.11.1",
+    "three": "^0.170.0"
+  }
+}

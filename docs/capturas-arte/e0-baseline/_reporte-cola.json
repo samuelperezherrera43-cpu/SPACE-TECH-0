@@ -1,0 +1,23 @@
+{
+  "finishedAt": "2026-11-13T22:09:51.681Z",
+  "scenes": [
+    {
+      "name": "17-base-marciana",
+      "size": [
+        1920,
+        1080
+      ],
+      "calls": 794,
+      "triangles": 113606
+    },
+    {
+      "name": "18-menu-con-guardado-1920",
+      "size": [
+        1920,
+        1080
+      ],
+      "calls": 452,
+      "triangles": 47274
+    }
+  ]
+}

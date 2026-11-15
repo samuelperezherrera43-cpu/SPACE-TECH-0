@@ -1,0 +1,79 @@
+{
+  "startedAt": "2026-11-13T22:27:44.930Z",
+  "scenes": [
+    {
+      "name": "01-entrada-1920",
+      "size": [
+        1920,
+        1080
+      ],
+      "calls": 358,
+      "triangles": 39519
+    },
+    {
+      "name": "01-entrada-1366x768",
+      "size": [
+        1366,
+        768
+      ],
+      "calls": 360,
+      "triangles": 39615
+    },
+    {
+      "name": "01-entrada-1280x720",
+      "size": [
+        1280,
+        720
+      ],
+      "calls": 364,
+      "triangles": 39689
+    },
+    {
+      "name": "01-entrada-1024x600",
+      "size": [
+        1024,
+        600
+      ],
+      "calls": 363,
+      "triangles": 39651
+    },
+    {
+      "name": "02-menu-sin-guardado-1920",
+      "size": [
+        1920,
+        1080
+      ],
+      "calls": 367,
+      "triangles": 39929
+    },
+    {
+      "name": "02-menu-1366x768",
+      "size": [
+        1366,
+        768
+      ],
+      "calls": 371,
+      "triangles": 40105
+    },
+    {
+      "name": "02-menu-1280x720",
+      "size": [
+        1280,
+        720
+      ],
+      "calls": 374,
+      "triangles": 40141
+    },
+    {
+      "name": "07-pausa-1920",
+      "size": [
+        1920,
+        1080
+      ],
+      "calls": 239,
+      "triangles": 24853
+    }
+  ],
+  "errors": [],
+  "finishedAt": "2026-11-13T22:30:35.728Z"
+}

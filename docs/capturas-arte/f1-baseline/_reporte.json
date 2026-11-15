@@ -1,0 +1,43 @@
+{
+  "startedAt": "2026-11-14T13:25:15.899Z",
+  "scenes": [
+    {
+      "name": "14-luna-superficie",
+      "size": [
+        1920,
+        1080
+      ],
+      "calls": 357,
+      "triangles": 60549
+    },
+    {
+      "name": "15-base-lunar",
+      "size": [
+        1920,
+        1080
+      ],
+      "calls": 375,
+      "triangles": 60801
+    },
+    {
+      "name": "16-marte-superficie",
+      "size": [
+        1920,
+        1080
+      ],
+      "calls": 379,
+      "triangles": 56551
+    },
+    {
+      "name": "17-base-marciana",
+      "size": [
+        1920,
+        1080
+      ],
+      "calls": 397,
+      "triangles": 56803
+    }
+  ],
+  "errors": [],
+  "finishedAt": "2026-11-14T13:27:58.553Z"
+}

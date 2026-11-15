@@ -1,0 +1,32 @@
+{
+  "frames": 235,
+  "durationMs": 5017.399999991059,
+  "fps": 46.837007214975635,
+  "frameMsMean": 21.293617021251237,
+  "frameMsP50": 16.700000000000728,
+  "frameMsP95": 33.39999999999782,
+  "frameMsP99": 33.400000000001455,
+  "frameMsMin": -7.4000000059604645,
+  "frameMsMax": 33.5,
+  "drawCalls": 163,
+  "triangles": 14579,
+  "points": 3080,
+  "lines": 0,
+  "geometries": 83,
+  "textures": 37,
+  "programs": 24,
+  "pixelRatio": 1,
+  "canvas": [
+    1280,
+    800
+  ],
+  "state": "playing",
+  "activeBreaches": 3,
+  "quality": "high",
+  "glRenderer": "ANGLE (Intel, Intel(R) UHD Graphics 620 (0x00005917) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "glVendor": "Google Inc. (Intel)",
+  "label": "after-high",
+  "requestedQuality": "high",
+  "timestamp": "2026-11-10T23:06:17.059Z",
+  "errors": []
+}
