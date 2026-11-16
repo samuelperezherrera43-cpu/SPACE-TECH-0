@@ -3385,3 +3385,416 @@ body.touch-input .bar { height: 5px; }
   font-size: 9px;
   letter-spacing: 0.03em;
 }
+
+/* ==========================================================================
+   Menú de pausa — consola de sistema
+   Panel ancho con telemetría, 8 opciones reales y pie de estado.
+   Se declara al final para vencer a .card.compact y a los media queries
+   anteriores que fijaban el ancho en 480 px.
+   ========================================================================== */
+
+#screen-pause {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+  padding: clamp(10px, 2.2vw, 28px);
+  overscroll-behavior: contain;
+}
+
+#screen-pause .card.pause-card {
+  width: min(880px, 100%);
+  max-height: calc(100vh - clamp(20px, 4.4vw, 56px));
+  margin: auto;
+  padding: clamp(18px, 2.4vw, 30px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(12px, 1.8vw, 18px);
+  border-color: rgba(95, 240, 255, 0.26);
+  background:
+    radial-gradient(120% 90% at 10% 0%, rgba(20, 62, 84, 0.5), transparent 62%),
+    linear-gradient(165deg, rgba(11, 24, 40, 0.97), rgba(4, 8, 15, 0.99));
+  box-shadow:
+    0 40px 120px rgba(0, 0, 0, 0.66),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  scrollbar-width: thin;
+}
+
+/* Cabecera ----------------------------------------------------------------- */
+
+#screen-pause .pause-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: clamp(10px, 1.4vw, 14px);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+#screen-pause .pause-head > div:first-child { min-width: 0; }
+#screen-pause .pause-head .eyebrow { margin: 0 0 8px; }
+
+#screen-pause .pause-head .title {
+  margin: 0;
+  font-size: clamp(21px, 3.2vw, 30px);
+  letter-spacing: 0.14em;
+  line-height: 1;
+}
+
+#screen-pause .pause-head .panel-sub {
+  margin: 8px 0 0;
+  max-width: 48ch;
+  font-size: 11.5px;
+}
+
+#screen-pause .pause-head kbd {
+  padding: 1px 5px;
+  font-size: 9px;
+}
+
+.pause-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 180, 95, 0.42);
+  border-radius: 999px;
+  background: rgba(255, 180, 95, 0.08);
+  color: var(--amber);
+  font-family: var(--mono);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pause-badge-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 10px rgba(255, 180, 95, 0.85);
+  animation: pause-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes pause-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.7); }
+}
+
+/* Telemetría --------------------------------------------------------------- */
+
+.pause-telemetry {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line-soft);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--line-soft);
+}
+
+.pause-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px 12px;
+  background: rgba(5, 10, 18, 0.9);
+}
+
+.pause-cell > span {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.pause-cell > b {
+  font-family: var(--mono);
+  font-size: clamp(13px, 1.5vw, 17px);
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--cyan);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pause-cell > small {
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.05em;
+  color: rgba(127, 155, 179, 0.75);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pause-meter {
+  display: block;
+  height: 3px;
+  margin-top: 2px;
+  border-radius: 2px;
+  background: rgba(120, 190, 230, 0.16);
+  overflow: hidden;
+}
+
+.pause-meter > em {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(95, 240, 255, 0.6), var(--cyan));
+  box-shadow: 0 0 8px rgba(95, 240, 255, 0.45);
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.pause-meter.is-warn > em {
+  background: linear-gradient(90deg, rgba(255, 180, 95, 0.7), var(--amber));
+  box-shadow: 0 0 8px rgba(255, 180, 95, 0.4);
+}
+
+.pause-meter.is-danger > em {
+  background: linear-gradient(90deg, rgba(255, 92, 108, 0.7), var(--red));
+  box-shadow: 0 0 8px rgba(255, 92, 108, 0.45);
+}
+
+/* Rejilla de opciones ------------------------------------------------------ */
+
+#screen-pause .pause-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 0;
+}
+
+#screen-pause .pause-grid .pause-item:first-child { grid-column: span 2; }
+
+#screen-pause .pause-item {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: linear-gradient(180deg, rgba(14, 28, 46, 0.55), rgba(6, 12, 22, 0.72));
+  color: var(--text);
+  font-family: var(--font);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    border-color 0.16s ease,
+    background-color 0.16s ease,
+    box-shadow 0.2s ease;
+}
+
+#screen-pause .pause-item:hover,
+#screen-pause .pause-item:focus-visible {
+  border-color: rgba(95, 240, 255, 0.55);
+  background: linear-gradient(180deg, rgba(24, 60, 84, 0.62), rgba(8, 20, 32, 0.82));
+  box-shadow:
+    0 0 0 1px rgba(95, 240, 255, 0.14),
+    0 10px 24px rgba(0, 0, 0, 0.35);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+#screen-pause .pause-item:focus-visible { outline: 1px solid rgba(95, 240, 255, 0.75); outline-offset: 1px; }
+#screen-pause .pause-item:active { transform: translateY(0); }
+
+#screen-pause .pause-index {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: rgba(4, 10, 18, 0.72);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  transition: color 0.16s ease, border-color 0.16s ease;
+}
+
+#screen-pause .pause-item:hover .pause-index,
+#screen-pause .pause-item:focus-visible .pause-index {
+  color: var(--cyan);
+  border-color: rgba(95, 240, 255, 0.45);
+}
+
+#screen-pause .pause-copy {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+#screen-pause .pause-copy strong {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1.25;
+  color: #eafdff;
+}
+
+#screen-pause .pause-copy small {
+  font-family: var(--font);
+  font-size: 10px;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#screen-pause .pause-key {
+  flex: 0 0 auto;
+  padding: 2px 6px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: rgba(4, 10, 18, 0.72);
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 8.5px;
+  letter-spacing: 0.08em;
+}
+
+#screen-pause .pause-item.is-primary {
+  border-color: rgba(95, 240, 255, 0.5);
+  background: linear-gradient(180deg, rgba(26, 86, 110, 0.55), rgba(8, 30, 44, 0.82));
+  box-shadow: 0 0 26px rgba(95, 240, 255, 0.1);
+}
+
+#screen-pause .pause-item.is-primary .pause-copy strong { color: #d9fbff; }
+#screen-pause .pause-item.is-primary .pause-index,
+#screen-pause .pause-item.is-primary .pause-key {
+  color: var(--cyan);
+  border-color: rgba(95, 240, 255, 0.45);
+}
+
+#screen-pause .pause-item.is-danger:hover,
+#screen-pause .pause-item.is-danger:focus-visible {
+  border-color: rgba(255, 92, 108, 0.6);
+  background: linear-gradient(180deg, rgba(78, 22, 32, 0.55), rgba(24, 8, 14, 0.82));
+  box-shadow:
+    0 0 0 1px rgba(255, 92, 108, 0.16),
+    0 10px 24px rgba(0, 0, 0, 0.35);
+}
+
+#screen-pause .pause-item.is-danger:hover .pause-copy strong,
+#screen-pause .pause-item.is-danger:focus-visible .pause-copy strong,
+#screen-pause .pause-item.is-danger:hover .pause-index,
+#screen-pause .pause-item.is-danger:focus-visible .pause-index {
+  color: var(--red);
+  border-color: rgba(255, 92, 108, 0.5);
+}
+
+#screen-pause .pause-item.is-saved {
+  border-color: rgba(109, 255, 168, 0.55);
+  background: linear-gradient(180deg, rgba(20, 66, 48, 0.55), rgba(8, 24, 18, 0.82));
+}
+
+#screen-pause .pause-item.is-saved .pause-copy strong,
+#screen-pause .pause-item.is-saved .pause-index {
+  color: var(--green);
+  border-color: rgba(109, 255, 168, 0.45);
+}
+
+#screen-pause .pause-item[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+#screen-pause .pause-item[disabled]:hover {
+  transform: none;
+  border-color: var(--line);
+  background: linear-gradient(180deg, rgba(14, 28, 46, 0.55), rgba(6, 12, 22, 0.72));
+  box-shadow: none;
+}
+
+/* Pie de estado ------------------------------------------------------------ */
+
+#screen-pause .pause-foot {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding-top: clamp(10px, 1.4vw, 14px);
+  border-top: 1px solid var(--line-soft);
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(127, 155, 179, 0.8);
+}
+
+#screen-pause #pause-status { color: var(--green); }
+#screen-pause #pause-status.is-warn { color: var(--amber); }
+#screen-pause .pause-room { color: var(--cyan); }
+#screen-pause .pause-room b { color: #eafdff; font-weight: 600; letter-spacing: 0.16em; }
+
+#screen-pause .pause-hint {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-left: auto;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: rgba(127, 155, 179, 0.6);
+}
+
+#screen-pause .pause-hint kbd { padding: 1px 4px; font-size: 9px; }
+
+/* Adaptación a pantallas pequeñas ----------------------------------------- */
+
+@media (max-width: 780px) {
+  #screen-pause .card.pause-card {
+    max-height: none;
+    padding: 16px;
+    gap: 12px;
+  }
+
+  #screen-pause .pause-head {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  #screen-pause .pause-head .panel-sub { margin-top: 6px; }
+  #screen-pause .pause-telemetry { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  #screen-pause .pause-grid { grid-template-columns: 1fr; }
+  #screen-pause .pause-grid .pause-item:first-child { grid-column: span 1; }
+  #screen-pause .pause-hint { display: none; }
+}
+
+@media (max-height: 620px) {
+  #screen-pause .card.pause-card {
+    max-height: none;
+    padding: 14px 16px;
+    gap: 10px;
+  }
+
+  #screen-pause .pause-head .panel-sub { display: none; }
+  #screen-pause .pause-item { padding: 8px 10px; }
+  #screen-pause .pause-telemetry .pause-cell { padding: 7px 10px; }
+}
+
+body.touch-input #screen-pause .pause-key,
+body.touch-input #screen-pause .pause-hint { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pause-badge-dot { animation: none; }
+  #screen-pause .pause-item { transition: none; }
+}

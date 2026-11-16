@@ -475,46 +475,112 @@
       </div>
     </section>
 
-    <section id="screen-pause" class="screen hidden">
+    <section id="screen-pause" class="screen hidden" aria-labelledby="pause-title">
       <div class="card compact pause-card">
-        <p class="eyebrow">Pausa</p>
-        <h2 class="title small">Misión en espera</h2>
-        <p class="panel-sub">El mundo está detenido. Elige una opción.</p>
+        <header class="pause-head">
+          <div>
+            <p class="eyebrow">Sistema en pausa</p>
+            <h2 id="pause-title" class="title small">MISIÓN EN ESPERA</h2>
+            <p class="panel-sub">
+              La simulación está congelada. Elige una opción o pulsa <kbd>ESC</kbd> para continuar.
+            </p>
+          </div>
+          <div class="pause-badge" aria-hidden="true">
+            <span class="pause-badge-dot"></span>
+            <b>EN PAUSA</b>
+          </div>
+        </header>
+
+        <div class="pause-telemetry" aria-label="Estado de la partida">
+          <div class="pause-cell">
+            <span>Oxígeno</span>
+            <b id="pause-o2">100%</b>
+            <i class="pause-meter"><em id="pause-o2-fill"></em></i>
+          </div>
+          <div class="pause-cell">
+            <span>Integridad</span>
+            <b id="pause-integrity">100%</b>
+            <i class="pause-meter"><em id="pause-integrity-fill"></em></i>
+          </div>
+          <div class="pause-cell">
+            <span>Misión</span>
+            <b id="pause-mission">Sin misión activa</b>
+            <small id="pause-mission-sub">Acepta una en el puente</small>
+          </div>
+          <div class="pause-cell">
+            <span>Tiempo</span>
+            <b id="pause-time">00:00</b>
+            <small id="pause-place">Estación EVA-07</small>
+          </div>
+        </div>
 
         <div class="menu-options pause-grid">
-          <button id="btn-resume" class="btn" type="button">
-            <strong>CONTINUAR</strong>
-            <span>Vuelve a la partida</span>
+          <button id="btn-resume" class="pause-item is-primary" type="button">
+            <span class="pause-index">01</span>
+            <span class="pause-copy">
+              <strong>CONTINUAR</strong>
+              <small>Vuelve a la partida</small>
+            </span>
+            <span class="pause-key">ESC</span>
           </button>
-          <button id="btn-pause-manual" class="btn ghost" type="button">
-            <strong>MANUAL Y CONTROLES</strong>
-            <span>Controles reales y ayuda contextual</span>
+          <button id="btn-pause-manual" class="pause-item" type="button">
+            <span class="pause-index">02</span>
+            <span class="pause-copy">
+              <strong>MANUAL Y CONTROLES</strong>
+              <small>Controles reales y ayuda contextual</small>
+            </span>
           </button>
-          <button id="btn-pause-objectives" class="btn ghost" type="button">
-            <strong>OBJETIVOS</strong>
-            <span>Misión activa y progreso</span>
+          <button id="btn-pause-objectives" class="pause-item" type="button">
+            <span class="pause-index">03</span>
+            <span class="pause-copy">
+              <strong>OBJETIVOS</strong>
+              <small>Misión activa y progreso</small>
+            </span>
           </button>
-          <button id="btn-pause-design" class="btn ghost" type="button">
-            <strong>DISEÑO DE MISIÓN</strong>
-            <span>Mesa de diseño de seis fases</span>
+          <button id="btn-pause-design" class="pause-item" type="button">
+            <span class="pause-index">04</span>
+            <span class="pause-copy">
+              <strong>DISEÑO DE MISIÓN</strong>
+              <small>Mesa de diseño de seis fases</small>
+            </span>
           </button>
-          <button id="btn-pause-academy" class="btn ghost" type="button">
-            <strong>ACADEMIA SPACE-TECH</strong>
-            <span>Lecciones y progreso educativo</span>
+          <button id="btn-pause-academy" class="pause-item" type="button">
+            <span class="pause-index">05</span>
+            <span class="pause-copy">
+              <strong>ACADEMIA SPACE-TECH</strong>
+              <small>Lecciones y progreso educativo</small>
+            </span>
           </button>
-          <button id="btn-pause-settings" class="btn ghost" type="button">
-            <strong>CONFIGURACIÓN</strong>
-            <span>Dificultad y sensibilidad</span>
+          <button id="btn-pause-settings" class="pause-item" type="button">
+            <span class="pause-index">06</span>
+            <span class="pause-copy">
+              <strong>CONFIGURACIÓN</strong>
+              <small>Dificultad y sensibilidad</small>
+            </span>
           </button>
-          <button id="btn-pause-save" class="btn ghost" type="button">
-            <strong>GUARDAR PARTIDA</strong>
-            <span>Guarda el estado actual</span>
+          <button id="btn-pause-save" class="pause-item" type="button">
+            <span class="pause-index">07</span>
+            <span class="pause-copy">
+              <strong>GUARDAR PARTIDA</strong>
+              <small>Guarda el estado actual</small>
+            </span>
           </button>
-          <button id="btn-pause-exit" class="btn ghost" type="button">
-            <strong>SALIR AL MENÚ PRINCIPAL</strong>
-            <span>Guarda y vuelve al menú</span>
+          <button id="btn-pause-exit" class="pause-item is-danger" type="button">
+            <span class="pause-index">08</span>
+            <span class="pause-copy">
+              <strong>SALIR AL MENÚ PRINCIPAL</strong>
+              <small>Guarda y vuelve al menú</small>
+            </span>
           </button>
         </div>
+
+        <footer class="pause-foot">
+          <span id="pause-status" aria-live="polite">Progreso guardado automáticamente</span>
+          <span id="pause-room" class="pause-room hidden"></span>
+          <span class="pause-hint">
+            <kbd>ESC</kbd> continuar · <kbd>↑</kbd><kbd>↓</kbd> navegar · <kbd>1</kbd>–<kbd>8</kbd> opciones
+          </span>
+        </footer>
       </div>
     </section>
 

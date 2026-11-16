@@ -551,7 +551,7 @@ export class Game {
     this.root.querySelector('#btn-pause-academy')?.addEventListener('click', () => this.openAcademy());
     this.root.querySelector('#btn-pause-settings')?.addEventListener('click', () => this.openSettings('pause'));
     this.root.querySelector('#btn-pause-save')?.addEventListener('click', () => {
-      if (this.saveGame(false)) this.audio.ui();
+      this._saveFromPause();
     });
     this.root.querySelector('#btn-pause-exit')?.addEventListener('click', () => this.exitToMenu());
 
@@ -588,6 +588,51 @@ export class Game {
           event.preventDefault();
           this.closePanel();
           return;
+        }
+        // En pausa, ESC reanuda la simulación (no hay Pointer Lock que perder).
+        if (this.state === 'paused') {
+          event.preventDefault();
+          this.resume();
+          return;
+        }
+      }
+
+      // Navegación del menú de pausa: flechas y atajos 1–8.
+      if (
+        this.state === 'paused' &&
+        !this.settingsOpen &&
+        !this.panelOpen &&
+        !this._anyOverlayOpen()
+      ) {
+        const buttons = [...this.root.querySelectorAll('#screen-pause .pause-grid button')];
+        if (buttons.length) {
+          const active = document.activeElement;
+          if (event.code === 'ArrowDown' || event.code === 'ArrowUp') {
+            event.preventDefault();
+            const usable = buttons.filter((button) => !button.disabled);
+            if (usable.length) {
+              const index = usable.indexOf(active);
+              const step = event.code === 'ArrowDown' ? 1 : -1;
+              const next =
+                index === -1
+                  ? step > 0
+                    ? 0
+                    : usable.length - 1
+                  : (index + step + usable.length) % usable.length;
+              usable[next]?.focus();
+            }
+            return;
+          }
+          const shortcut = /^(?:Digit|Numpad)([1-8])$/.exec(event.code);
+          if (shortcut) {
+            const target = buttons[Number(shortcut[1]) - 1];
+            if (target && !target.disabled) {
+              event.preventDefault();
+              target.focus();
+              target.click();
+            }
+            return;
+          }
         }
       }
 
@@ -3793,6 +3838,7 @@ export class Game {
     }
     if (from === 'paused') {
       this.state = 'paused';
+      this._refreshPauseScreen();
       this.hud.screen('pause');
       return;
     }
@@ -4358,9 +4404,12 @@ export class Game {
     this.state = 'paused';
     this.needsRender = true;
     this.audio.silenceLoops();
+    this._refreshPauseScreen();
     this.hud.screen('pause');
     this._refreshContinueButton();
     if (document.pointerLockElement) document.exitPointerLock();
+    // Foco inicial en CONTINUAR: habilita flechas, Enter y atajos 1–8.
+    this.root.querySelector('#btn-resume')?.focus({ preventScroll: true });
   }
 
   resume() {
@@ -4368,9 +4417,141 @@ export class Game {
     this.settingsOpen = false;
     this.state = 'playing';
     this.hud.screen(null);
+    // Evita que la barra espaciadora vuelva a activar el botón enfocado.
+    const active = document.activeElement;
+    if (active instanceof HTMLElement && active.closest('#screen-pause')) active.blur();
     this.ignoreUnlock = true;
     this.controls.requestLock();
     this.clock.getDelta();
+  }
+
+  /** Rellena telemetría, sala y estado de guardado del menú de pausa. */
+  _refreshPauseScreen() {
+    const q = (id) => this.root.querySelector(`#${id}`);
+    const clamp = (value) => Math.max(0, Math.min(100, Math.round(Number(value) || 0)));
+
+    const o2 = clamp(this.player?.o2 ?? 100);
+    const hull = clamp(this.player?.hull ?? this.integrity ?? 100);
+
+    const setMeter = (fillId, value) => {
+      const fill = q(fillId);
+      if (!fill) return;
+      fill.style.width = `${value}%`;
+      const meter = fill.parentElement;
+      if (!meter) return;
+      meter.classList.toggle('is-danger', value <= 25);
+      meter.classList.toggle('is-warn', value > 25 && value <= 50);
+    };
+
+    const o2Label = q('pause-o2');
+    if (o2Label) o2Label.textContent = `${o2}%`;
+    const hullLabel = q('pause-integrity');
+    if (hullLabel) hullLabel.textContent = `${hull}%`;
+    setMeter('pause-o2-fill', o2);
+    setMeter('pause-integrity-fill', hull);
+
+    const mission = this.missions.active;
+    const missionLabel = q('pause-mission');
+    const missionSub = q('pause-mission-sub');
+    if (missionLabel) missionLabel.textContent = mission ? mission.name : 'Sin misión activa';
+    if (missionSub) {
+      if (mission) {
+        const done = mission.objectives.reduce(
+          (sum, item) => sum + Math.min(item.target, item.progress),
+          0
+        );
+        const total = mission.objectives.reduce((sum, item) => sum + item.target, 0);
+        missionSub.textContent = `${done} / ${total} objetivos`;
+      } else {
+        missionSub.textContent = 'Acepta una en el puente';
+      }
+    }
+
+    const timeLabel = q('pause-time');
+    if (timeLabel) timeLabel.textContent = this._formatPauseTime(this.time);
+    const placeLabel = q('pause-place');
+    if (placeLabel) {
+      placeLabel.textContent =
+        this.destinations[this.destination]?.name ?? 'Estación Orbital EVA-07';
+    }
+
+    const status = q('pause-status');
+    const room = q('pause-room');
+    const save = q('btn-pause-save');
+    const saveCopy = save?.querySelector('small') ?? null;
+
+    if (this.multiplayerActive) {
+      if (save) save.disabled = true;
+      if (saveCopy) saveCopy.textContent = 'No disponible en cooperativo';
+      if (status) {
+        status.textContent = 'Sesión cooperativa: el progreso no se guarda en el perfil';
+        status.classList.add('is-warn');
+      }
+      if (room) {
+        const code = this.multiplayer.code || '—';
+        const players = this.multiplayer.players?.size ?? 1;
+        const max = this.multiplayer.maxClients ?? 4;
+        const host = this.multiplayer.isHost ? ' · anfitrión' : '';
+        room.innerHTML = `Sala <b>${code}</b> · ${players}/${max}${host}`;
+        room.classList.remove('hidden');
+      }
+    } else {
+      if (save) save.disabled = false;
+      if (saveCopy) saveCopy.textContent = 'Guarda el estado actual';
+      if (status) {
+        status.textContent = 'Guardado automático activo';
+        status.classList.remove('is-warn');
+      }
+      if (room) {
+        room.classList.add('hidden');
+        room.textContent = '';
+      }
+    }
+  }
+
+  /** Guarda desde el menú de pausa y deja constancia visual del resultado. */
+  _saveFromPause() {
+    const saved = this.saveGame(false);
+    const status = this.root.querySelector('#pause-status');
+    if (saved) {
+      this.audio.ui();
+      this._markPauseSaved();
+      if (status) {
+        status.textContent = 'Partida guardada · perfil actualizado';
+        status.classList.remove('is-warn');
+      }
+      return true;
+    }
+    if (status) {
+      status.textContent = this.multiplayerActive
+        ? 'Sesión cooperativa: no se guarda en el perfil'
+        : 'No se pudo guardar la partida';
+      status.classList.toggle('is-warn', true);
+    }
+    return false;
+  }
+
+  /** Feedback temporal en la opción GUARDAR PARTIDA. */
+  _markPauseSaved() {
+    const button = this.root.querySelector('#btn-pause-save');
+    if (!button) return;
+    button.classList.add('is-saved');
+    const copy = button.querySelector('small');
+    if (copy) copy.textContent = 'Guardado ✓';
+    clearTimeout(this._pauseSaveTimer);
+    this._pauseSaveTimer = setTimeout(() => {
+      button.classList.remove('is-saved');
+      if (copy) copy.textContent = 'Guarda el estado actual';
+    }, 2400);
+  }
+
+  _formatPauseTime(seconds) {
+    const total = Math.max(0, Math.floor(Number(seconds) || 0));
+    const h = Math.floor(total / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = total % 60;
+    const pad = (value) => String(value).padStart(2, '0');
+    return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
   }
 
   /** Guarda y vuelve al menú principal sin borrar el progreso. */
