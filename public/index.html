@@ -478,104 +478,122 @@
     <section id="screen-pause" class="screen hidden" aria-labelledby="pause-title">
       <div class="card compact pause-card">
         <header class="pause-head">
-          <div>
+          <div class="pause-head-main">
             <p class="eyebrow">Sistema en pausa</p>
             <h2 id="pause-title" class="title small">MISIÓN EN ESPERA</h2>
             <p class="panel-sub">
               La simulación está congelada. Elige una opción o pulsa <kbd>ESC</kbd> para continuar.
             </p>
           </div>
-          <div class="pause-badge" aria-hidden="true">
-            <span class="pause-badge-dot"></span>
-            <b>EN PAUSA</b>
+          <div class="pause-head-tags">
+            <span id="pause-difficulty" class="pause-chip">Exploración</span>
+            <span class="pause-badge">
+              <span class="pause-badge-dot" aria-hidden="true"></span>
+              <b>EN PAUSA</b>
+            </span>
           </div>
         </header>
 
-        <div class="pause-telemetry" aria-label="Estado de la partida">
-          <div class="pause-cell">
-            <span>Oxígeno</span>
-            <b id="pause-o2">100%</b>
-            <i class="pause-meter"><em id="pause-o2-fill"></em></i>
-          </div>
-          <div class="pause-cell">
-            <span>Integridad</span>
-            <b id="pause-integrity">100%</b>
-            <i class="pause-meter"><em id="pause-integrity-fill"></em></i>
-          </div>
-          <div class="pause-cell">
-            <span>Misión</span>
-            <b id="pause-mission">Sin misión activa</b>
-            <small id="pause-mission-sub">Acepta una en el puente</small>
-          </div>
-          <div class="pause-cell">
-            <span>Tiempo</span>
-            <b id="pause-time">00:00</b>
-            <small id="pause-place">Estación EVA-07</small>
-          </div>
-        </div>
+        <div class="pause-body">
+          <aside class="pause-status" aria-label="Estado de la partida">
+            <div class="pause-cell">
+              <span>Oxígeno</span>
+              <b id="pause-o2">100%</b>
+              <i class="pause-meter"><em id="pause-o2-fill"></em></i>
+            </div>
+            <div class="pause-cell">
+              <span>Integridad</span>
+              <b id="pause-integrity">100%</b>
+              <i class="pause-meter"><em id="pause-integrity-fill"></em></i>
+            </div>
+            <div class="pause-cell">
+              <span>CO₂</span>
+              <b id="pause-co2">0%</b>
+              <i class="pause-meter"><em id="pause-co2-fill"></em></i>
+            </div>
+            <div class="pause-cell">
+              <span>Filtro</span>
+              <b id="pause-filter">100%</b>
+              <i class="pause-meter"><em id="pause-filter-fill"></em></i>
+            </div>
+            <div class="pause-cell pause-cell-wide">
+              <span>Misión activa</span>
+              <b id="pause-mission">Sin misión activa</b>
+              <small id="pause-mission-sub">Acepta una en el puente</small>
+            </div>
+            <div class="pause-cell">
+              <span>Tiempo</span>
+              <b id="pause-time">00:00</b>
+            </div>
+            <div class="pause-cell">
+              <span>Ubicación</span>
+              <b id="pause-place" class="pause-place">Estación Orbital EVA-07</b>
+            </div>
+          </aside>
 
-        <div class="menu-options pause-grid">
-          <button id="btn-resume" class="pause-item is-primary" type="button">
-            <span class="pause-index">01</span>
-            <span class="pause-copy">
-              <strong>CONTINUAR</strong>
-              <small>Vuelve a la partida</small>
-            </span>
-            <span class="pause-key">ESC</span>
-          </button>
-          <button id="btn-pause-manual" class="pause-item" type="button">
-            <span class="pause-index">02</span>
-            <span class="pause-copy">
-              <strong>MANUAL Y CONTROLES</strong>
-              <small>Controles reales y ayuda contextual</small>
-            </span>
-          </button>
-          <button id="btn-pause-objectives" class="pause-item" type="button">
-            <span class="pause-index">03</span>
-            <span class="pause-copy">
-              <strong>OBJETIVOS</strong>
-              <small>Misión activa y progreso</small>
-            </span>
-          </button>
-          <button id="btn-pause-design" class="pause-item" type="button">
-            <span class="pause-index">04</span>
-            <span class="pause-copy">
-              <strong>DISEÑO DE MISIÓN</strong>
-              <small>Mesa de diseño de seis fases</small>
-            </span>
-          </button>
-          <button id="btn-pause-academy" class="pause-item" type="button">
-            <span class="pause-index">05</span>
-            <span class="pause-copy">
-              <strong>ACADEMIA SPACE-TECH</strong>
-              <small>Lecciones y progreso educativo</small>
-            </span>
-          </button>
-          <button id="btn-pause-settings" class="pause-item" type="button">
-            <span class="pause-index">06</span>
-            <span class="pause-copy">
-              <strong>CONFIGURACIÓN</strong>
-              <small>Dificultad y sensibilidad</small>
-            </span>
-          </button>
-          <button id="btn-pause-save" class="pause-item" type="button">
-            <span class="pause-index">07</span>
-            <span class="pause-copy">
-              <strong>GUARDAR PARTIDA</strong>
-              <small>Guarda el estado actual</small>
-            </span>
-          </button>
-          <button id="btn-pause-exit" class="pause-item is-danger" type="button">
-            <span class="pause-index">08</span>
-            <span class="pause-copy">
-              <strong>SALIR AL MENÚ PRINCIPAL</strong>
-              <small>Guarda y vuelve al menú</small>
-            </span>
-          </button>
+          <div class="menu-options pause-grid">
+            <button id="btn-resume" class="pause-item is-primary" type="button">
+              <span class="pause-index">01</span>
+              <span class="pause-copy">
+                <strong>CONTINUAR</strong>
+                <small>Vuelve a la partida</small>
+              </span>
+              <span class="pause-key">ESC</span>
+            </button>
+            <button id="btn-pause-manual" class="pause-item" type="button">
+              <span class="pause-index">02</span>
+              <span class="pause-copy">
+                <strong>MANUAL Y CONTROLES</strong>
+                <small>Controles reales y ayuda contextual</small>
+              </span>
+            </button>
+            <button id="btn-pause-objectives" class="pause-item" type="button">
+              <span class="pause-index">03</span>
+              <span class="pause-copy">
+                <strong>OBJETIVOS</strong>
+                <small>Misión activa y progreso</small>
+              </span>
+            </button>
+            <button id="btn-pause-design" class="pause-item" type="button">
+              <span class="pause-index">04</span>
+              <span class="pause-copy">
+                <strong>DISEÑO DE MISIÓN</strong>
+                <small>Mesa de diseño de seis fases</small>
+              </span>
+            </button>
+            <button id="btn-pause-academy" class="pause-item" type="button">
+              <span class="pause-index">05</span>
+              <span class="pause-copy">
+                <strong>ACADEMIA SPACE-TECH</strong>
+                <small>Lecciones y progreso educativo</small>
+              </span>
+            </button>
+            <button id="btn-pause-settings" class="pause-item" type="button">
+              <span class="pause-index">06</span>
+              <span class="pause-copy">
+                <strong>CONFIGURACIÓN</strong>
+                <small>Dificultad y sensibilidad</small>
+              </span>
+            </button>
+            <button id="btn-pause-save" class="pause-item" type="button">
+              <span class="pause-index">07</span>
+              <span class="pause-copy">
+                <strong>GUARDAR PARTIDA</strong>
+                <small>Guarda el estado actual</small>
+              </span>
+            </button>
+            <button id="btn-pause-exit" class="pause-item is-danger" type="button">
+              <span class="pause-index">08</span>
+              <span class="pause-copy">
+                <strong>SALIR AL MENÚ PRINCIPAL</strong>
+                <small>Guarda y vuelve al menú</small>
+              </span>
+            </button>
+          </div>
         </div>
 
         <footer class="pause-foot">
-          <span id="pause-status" aria-live="polite">Progreso guardado automáticamente</span>
+          <span id="pause-status" aria-live="polite">Guardado automático activo</span>
           <span id="pause-room" class="pause-room hidden"></span>
           <span class="pause-hint">
             <kbd>ESC</kbd> continuar · <kbd>↑</kbd><kbd>↓</kbd> navegar · <kbd>1</kbd>–<kbd>8</kbd> opciones

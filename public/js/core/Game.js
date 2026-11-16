@@ -4432,23 +4432,37 @@ export class Game {
 
     const o2 = clamp(this.player?.o2 ?? 100);
     const hull = clamp(this.player?.hull ?? this.integrity ?? 100);
+    const co2 = clamp(this.player?.co2 ?? 0);
+    const filter = clamp((this.player?.filterLife ?? 1) * 100);
 
-    const setMeter = (fillId, value) => {
+    const setMeter = (fillId, value, { invert = false } = {}) => {
       const fill = q(fillId);
       if (!fill) return;
-      fill.style.width = `${value}%`;
+      const width = Math.max(0, Math.min(100, value));
+      fill.style.width = `${width}%`;
       const meter = fill.parentElement;
       if (!meter) return;
-      meter.classList.toggle('is-danger', value <= 25);
-      meter.classList.toggle('is-warn', value > 25 && value <= 50);
+      const danger = invert ? width > 70 : width <= 25;
+      const warn = invert ? width > 40 : width <= 50;
+      meter.classList.toggle('is-danger', danger);
+      meter.classList.toggle('is-warn', !danger && warn);
     };
 
     const o2Label = q('pause-o2');
     if (o2Label) o2Label.textContent = `${o2}%`;
     const hullLabel = q('pause-integrity');
     if (hullLabel) hullLabel.textContent = `${hull}%`;
+    const co2Label = q('pause-co2');
+    if (co2Label) co2Label.textContent = `${co2}%`;
+    const filterLabel = q('pause-filter');
+    if (filterLabel) filterLabel.textContent = `${filter}%`;
     setMeter('pause-o2-fill', o2);
     setMeter('pause-integrity-fill', hull);
+    setMeter('pause-co2-fill', co2, { invert: true });
+    setMeter('pause-filter-fill', filter);
+
+    const difficulty = q('pause-difficulty');
+    if (difficulty) difficulty.textContent = this.balance.values?.name ?? 'Normal';
 
     const mission = this.missions.active;
     const missionLabel = q('pause-mission');
