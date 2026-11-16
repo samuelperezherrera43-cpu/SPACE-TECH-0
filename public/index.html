@@ -5,8 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#04060d" />
   <meta name="description" content="SPACE-TECH — simulador interactivo de misiones espaciales. Diseña misiones, aprende con la Academia y explora la estación, la Luna y Marte." />
+  <!-- URL del servidor multijugador. Vacío = mismo origen (proxy inverso). -->
+  <meta name="multiplayer-url" content="" />
   <title>SPACE-TECH — Simulador interactivo de misiones espaciales</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='%23070c16' stroke='%235ff0ff' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%235ff0ff'/%3E%3C/svg%3E" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="SPACE-TECH" />
   <link rel="stylesheet" href="./css/styles.css" />
   <script type="importmap">
     {
@@ -107,6 +115,51 @@
       <footer class="hud-bottom">
         <div id="tools" class="tools"></div>
       </footer>
+    </div>
+
+    <!-- ======================= CONTROLES TÁCTILES ======================= -->
+    <div id="touch-controls" class="touch-controls hidden" aria-hidden="true">
+      <div id="touch-look" class="touch-look" aria-hidden="true"></div>
+
+      <div id="touch-stick" class="touch-stick" role="presentation">
+        <span class="touch-stick-ring" aria-hidden="true"></span>
+        <span id="touch-knob" class="touch-knob" aria-hidden="true"></span>
+      </div>
+
+      <div class="touch-actions">
+        <div class="touch-row touch-row-top">
+          <button class="touch-btn touch-tool" data-touch="tool" type="button" aria-label="Cambiar herramienta">
+            <span class="touch-btn-key">1·2·3</span>
+            <span id="touch-tool-label" class="touch-btn-label">HERRAMIENTA 1</span>
+          </button>
+          <button
+            id="touch-pause"
+            class="touch-btn touch-pause"
+            data-touch="pause"
+            type="button"
+            aria-label="Pausa"
+          >II</button>
+        </div>
+
+        <div class="touch-row">
+          <button class="touch-btn touch-boost" data-touch="boost" type="button" aria-label="Propulsores">
+            <span class="touch-btn-key">RCS</span>
+          </button>
+          <button class="touch-btn touch-jump" data-touch="jump" type="button" aria-label="Subir">
+            <span class="touch-btn-key">↑</span>
+          </button>
+          <button class="touch-btn touch-repair" data-touch="repair" type="button" aria-label="Reparar o usar herramienta">
+            <span class="touch-btn-key">REPARAR</span>
+          </button>
+        </div>
+
+        <div class="touch-row touch-row-main">
+          <button class="touch-btn touch-interact" data-touch="interact" type="button" aria-label="Interactuar">
+            <span class="touch-btn-key">E</span>
+            <span class="touch-btn-label">USAR</span>
+          </button>
+        </div>
+      </div>
     </div>
 
     <!-- ======================= MISIÓN COMPLETADA ======================= -->
@@ -497,6 +550,8 @@
     </section>
   </div>
 
+  <!-- Configuración de despliegue: URL del servidor multijugador. -->
+  <script src="./config.js"></script>
   <script type="module" src="./js/main.js"></script>
 </body>
 </html>

@@ -228,10 +228,16 @@ NODE_ENV=production PORT=2567 CORS_ORIGIN=https://tu-juego.example.com \
 
 ### 7.3 Frontend
 
-- Publica `public/` donde ya se despliega el juego (Cloudflare Pages, etc.).
-- Define `window.SPACE_TECH_CONFIG.multiplayerUrl` con la URL **HTTPS** del servidor.
+- Publica `public/` donde ya se despliega el juego (Vercel, Cloudflare Pages, etc.).
+- **Vercel:** `vercel.json` ya declara `outputDirectory: "public"` y las cabeceras.
+  Importa el repositorio en Vercel y despliega sin build (`framework: null`).
+- Define `window.SPACE_TECH_CONFIG.multiplayerUrl` con la URL **HTTPS** del servidor
+  en `public/config.js` **antes** de desplegar (Vercel no ejecuta Node/Colyseus).
+- Define también `publicUrl` con el dominio público para los enlaces de invitación.
 - Si el juego y el servidor comparten dominio, publica el servidor bajo el mismo
   origen y no necesitas configurar nada.
+- El cliente nunca debe apuntar a `localhost` en un despliegue público: el
+  navegador de otro dispositivo no puede resolverlo.
 
 ### 7.4 Lista de comprobación
 

@@ -20,6 +20,7 @@ import { PlanetWorld } from '../entities/PlanetWorld.js';
 import { TravelScene } from '../entities/TravelScene.js';
 import { MOON_CONFIG, MARS_CONFIG } from './Universe.js';
 import { HUD } from '../ui/HUD.js';
+import { TouchControls } from '../ui/TouchControls.js';
 import { UserManual, zoneFor, zoneInfo } from '../ui/UserManual.js';
 import { AcademyUI } from '../ui/AcademyUI.js';
 import { DataCenterUI } from '../ui/DataCenterUI.js';
@@ -133,6 +134,7 @@ export class Game {
       powerPreference: 'high-performance',
     });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, preset.pixelRatio));
+    this.renderPixelRatio = this.renderer.getPixelRatio();
     this.renderer.setSize(window.innerWidth, window.innerHeight, false);
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -361,6 +363,10 @@ export class Game {
     });
 
     this.controls = new Controls(this.canvas);
+    this.touch = new TouchControls(this.root, this.controls);
+    this.touch.onPause = () => this.pause();
+    this.touch.onTool = () => this.selectTool((this.toolIndex + 1) % TOOLS.length);
+    this.hud.touchMode = this.touch.enabled;
     this._bindEvents();
     this._syncQualityUI();
     this._syncDifficultyUI();
@@ -392,6 +398,7 @@ export class Game {
    */
   applyQuality(preset) {
     const ratio = Math.min(window.devicePixelRatio || 1, preset.pixelRatio);
+    this.renderPixelRatio = ratio;
 
     this.renderer.setPixelRatio(ratio);
     this.renderer.setSize(window.innerWidth, window.innerHeight, false);
@@ -417,6 +424,53 @@ export class Game {
     // Sin selector visible: el perfil estándar es único.
   }
 
+  /**
+   * Calidad adaptativa para móviles: conserva el perfil estándar (único) y sólo
+   * reduce la resolución de render cuando el dispositivo no sostiene el frame.
+   */
+  _adaptQuality(dt) {
+    if (!this.adaptiveQuality || !this.controls.coarsePointer) return;
+
+    this.qualityCooldown = Math.max(0, this.qualityCooldown - dt);
+    if (this.state !== 'playing') {
+      this.qualityAccum = 0;
+      this.qualitySamples = 0;
+      return;
+    }
+
+    this.qualityAccum += dt;
+    this.qualitySamples += 1;
+    if (this.qualityAccum < 1.5) return;
+
+    const average = this.qualityAccum / Math.max(1, this.qualitySamples);
+    this.qualityAccum = 0;
+    this.qualitySamples = 0;
+    if (this.qualityCooldown > 0) return;
+
+    const base = Math.min(window.devicePixelRatio || 1, this.quality.preset.pixelRatio);
+    const current = this.renderer.getPixelRatio();
+    let next = current;
+
+    if (average > 0.028 && current > 0.56) next = Math.max(0.56, current - 0.16);
+    else if (average < 0.0175 && current < base) next = Math.min(base, current + 0.08);
+
+    if (Math.abs(next - current) < 0.001) return;
+
+    this._setRenderPixelRatio(next);
+    this.qualityCooldown = 2.5;
+  }
+
+  _setRenderPixelRatio(ratio) {
+    this.renderPixelRatio = ratio;
+    this.renderer.setPixelRatio(ratio);
+    this.postFX.setPixelRatio();
+    this.environment.setPixelRatio(ratio);
+    this.thrusterParticles.setPixelRatio(ratio);
+    this.sparkParticles.setPixelRatio(ratio);
+    this.leakParticles.setPixelRatio(ratio);
+    this.needsRender = true;
+  }
+
   _syncDifficultyUI() {
     const buttons = this.root.querySelectorAll('[data-difficulty]');
     for (const button of buttons) {
@@ -432,13 +486,14 @@ export class Game {
     window.addEventListener('resize', () => {
       this.camera.aspect = window.innerWidth / window.innerHeight;
       this.camera.updateProjectionMatrix();
-      this.renderer.setPixelRatio(
-        Math.min(window.devicePixelRatio || 1, this.quality.preset.pixelRatio)
-      );
+      // Conserva la resolución adaptativa (móvil): un resize no debe devolver
+      // el pixel ratio al máximo y provocar oscilación de rendimiento.
+      const base = Math.min(window.devicePixelRatio || 1, this.quality.preset.pixelRatio);
+      const ratio = Math.min(base, this.renderPixelRatio || base);
+      this.renderer.setPixelRatio(ratio);
       this.renderer.setSize(window.innerWidth, window.innerHeight, false);
       this.postFX.setSize(window.innerWidth, window.innerHeight);
-      this.environment.setPixelRatio(this.renderer.getPixelRatio());
-      const ratio = this.renderer.getPixelRatio();
+      this.environment.setPixelRatio(ratio);
       this.thrusterParticles.setPixelRatio(ratio);
       this.sparkParticles.setPixelRatio(ratio);
       this.leakParticles.setPixelRatio(ratio);
@@ -1055,6 +1110,10 @@ export class Game {
     const dt = Math.min(this.clock.getDelta(), 0.05);
     this.renderer.info.reset();
     this.environment.update(dt);
+    this._adaptQuality(dt);
+
+    // El overlay táctil sólo está activo durante la partida y sin paneles.
+    this.touch.sync(this.state === 'playing' && !this.panelOpen, this.toolIndex);
 
     if (this.state === 'playing') {
       this.update(dt);

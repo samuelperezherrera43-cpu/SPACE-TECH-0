@@ -9,8 +9,9 @@
 
 | Comando | Qué hace |
 |---------|----------|
-| `npm run check` | Valida sintaxis de los **42** archivos `.js` con `node --check`. **Siempre ejecuta esto antes que nada.** |
+| `npm run check` | Valida sintaxis de los **43** archivos `.js` con `node --check`. **Siempre ejecuta esto antes que nada.** |
 | `npm run smoke` | Test automatizado completo del cliente (Puppeteer). Se ejecuta en background. |
+| `npm run touch:test` | Test del modo táctil en Chrome con viewport de iPhone. |
 | `npm run dev` | Servidor estático `scripts/dev.mjs` + juego en `localhost:5173`. |
 | `npm run server:install` | Instala las dependencias del servidor Colyseus (`server/`). |
 | `npm run server:dev` | Arranca el servidor multijugador con recarga automática. |
@@ -42,6 +43,24 @@
 - Importaciones desde `./ruta`, `'three'`, `'cannon-es'` o `'@colyseus/sdk'` (importmap de `index.html`).
 - `@colyseus/sdk` se sirve empaquetado en `public/vendor/colyseus-sdk.mjs`; no se carga desde `node_modules` en el navegador.
 - El check usa `node --check` en cada archivo — **sintaxis inválida rompe el pipeline**.
+
+## Multiplataforma (táctil y PWA)
+
+| Elemento | Ubicación | Observación |
+|----------|-----------|-------------|
+| **Controles táctiles** | `public/js/ui/TouchControls.js` | Joystick, zona de cámara y botones. Escribe en `controls.touch` y `controls.mouse`; no crea bucles ni física |
+| **Estado táctil** | `public/js/engine/Controls.js` | `this.touch` separado de `pad` (poll lo sobrescribe); `coarsePointer` evita Pointer Lock y mousedown sintético |
+| **Reacomodo del HUD** | `public/css/styles.css` | `body.touch-input` mueve stats arriba, oculta la barra de herramientas y usa `env(safe-area-inset-*)` |
+| **Calidad adaptativa** | `Game._adaptQuality()` | Sólo en táctil: pixel ratio 0.56–1.0; el perfil gráfico sigue siendo único (`standard`) |
+| **PWA** | `public/manifest.webmanifest` + `public/assets/icon-*.png` | Iconos con `node scripts/make-icons.mjs`; no hay service worker |
+| **URLs de despliegue** | `public/config.js` | `multiplayerUrl` y `publicUrl`; nunca `localhost` en enlaces compartidos |
+
+Reglas:
+
+- No duplicar la simulación: el táctil sólo escribe estado que Player/Camera ya consumen.
+- No añadir presets de calidad: el smoke exige un único perfil `standard`.
+- En puntero grueso no se pide Pointer Lock.
+- `window.SPACE_TECH_TOUCH = true` fuerza el modo táctil (pruebas y equipos híbridos).
 
 ## Estados de la partida (Game.state)
 
@@ -82,15 +101,31 @@ Reglas que un agente debe respetar:
 
 ## Sistema de invitaciones (Prompt 5.2)
 
-- **Métodos de invitación:** enlace público (`?invite=`), código corto manual, y código QR.
-- **Anfitrión:** al crear una sala privada, se genera un token de alta entropía y se muestra una ventana "INVITAR A TU TRIPULACIÓN" con código, copiar enlace, QR y plazas disponibles.
-- **Validación en servidor:** el token se verifica exclusivamente en `onAuth`; el código por sí solo no autoriza el acceso a salas privadas.
-- **Seguridad:** tokens aleatorios (`crypto.randomBytes(24).toString('base64url')), TTL configurable (`INVITE_TTL_MS`), usos máximos (`INVITE_MAX_USES`), rate limiting (`INVITE_MAX_ATTEMPTS`, `INVITE_BLOCK_MS`). Revocables y con caducidad.
-- **Experiencia del invitado:** abrir página → recuperar código → nombre de sala → solicitar nombre → validar → admitir → mostrar astronauta.
-- **Compatibilidad:** computadoras, Android, iPhone, tablets. URLs con dominio público configurado; nunca `localhost` en enlaces compartidos.
-- **Compartir:** Web Share API cuando esté disponible; copia al portapapeles para WhatsApp, Discord, Mensajes y correo.
-- **No integrar APIs privadas** de plataformas externas.
-- **Pruebas:** primero con dos clientes independientes; después dos dispositivos en redes diferentes. No declarar funcionamiento por Internet hasta prueba pública real.
+**Estado real:** el lado servidor está implementado; **la interfaz de invitación
+en el cliente todavía no existe**. No afirmar lo contrario.
+
+- **Implementado en servidor** (`server/invites.js`):
+  - `generateToken()` crea un token de alta entropía (`crypto.randomBytes(24)`
+    en base64url) al crear una sala privada.
+  - `setCode(token, code)` asocia el código de 6 caracteres al token.
+  - `GET /invite/:token` devuelve `{ ok, roomName, code, usesLeft, expiresAt }`.
+  - Mensajes de sala `invite:get` (cualquier jugador) e `invite:rotate`
+    (sólo el anfitrión).
+  - Seguridad: TTL (`INVITE_TTL_MS`), usos (`INVITE_MAX_USES`), intentos
+    fallidos (`INVITE_MAX_ATTEMPTS`), ventana (`INVITE_ATTEMPT_WINDOW_MS`) y
+    bloqueo (`INVITE_BLOCK_MS`).
+- **Validación en `onAuth`:** si el cliente envía `inviteToken`, se valida y
+  consume un uso. Si **no** envía token, la entrada por código sigue permitida
+  (compatibilidad con el flujo actual). Endurecerlo exige antes crear la UI de
+  invitación en el cliente.
+- **Pendiente en cliente:** pantalla "INVITAR A TU TRIPULACIÓN" con código,
+  enlace, QR, copiar/compartir y plazas libres; lectura de `?invite=` al abrir
+  la página. No existe todavía.
+- **Compatibilidad:** computadoras, Android, iPhone, tablets. URLs con dominio
+  público configurado; nunca `localhost` en enlaces compartidos.
+- **Pruebas:** primero dos clientes independientes; después dos dispositivos en
+  redes distintas. No declarar funcionamiento por Internet hasta prueba pública
+  real.
 
 ### Variables de entorno (server/.env.example)
 
@@ -116,7 +151,7 @@ Reglas que un agente debe respetar:
 
 ## Flujo de trabajo verificado
 
-1. **`npm run check`** — 42/42 archivos válidos (siempre primero)
+1. **`npm run check`** - 43/43 archivos válidos (siempre primero)
 2. **`npm run smoke`** — test automatizado del cliente (background)
 3. **`npm run dev`** + **`npm run server:dev`** — juego y servidor en paralelo
 4. **Clic en "NUEVA PARTIDA"** → entra directo al juego (sin cinemática)

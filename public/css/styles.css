@@ -3109,3 +3109,279 @@ kbd {
 }
 
 
+
+/* ==========================================================================
+   CONTROLES TÁCTILES (móvil y tableta)
+   ========================================================================== */
+
+#scene { touch-action: none; }
+
+.touch-controls {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.touch-look {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 58%;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.touch-stick {
+  position: absolute;
+  left: calc(16px + env(safe-area-inset-left, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  width: 136px;
+  height: 136px;
+  border-radius: 50%;
+  border: 1px solid rgba(95, 240, 255, 0.34);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(8, 22, 38, 0.6) 0%,
+    rgba(4, 10, 18, 0.42) 68%,
+    rgba(4, 10, 18, 0.16) 100%
+  );
+  backdrop-filter: blur(2px);
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.touch-stick-ring {
+  position: absolute;
+  inset: 18px;
+  border-radius: 50%;
+  border: 1px dashed rgba(95, 240, 255, 0.18);
+}
+
+.touch-knob {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(95, 240, 255, 0.55);
+  background: radial-gradient(
+    circle at 40% 34%,
+    rgba(95, 240, 255, 0.38),
+    rgba(9, 26, 42, 0.9) 70%
+  );
+  box-shadow: 0 0 18px rgba(95, 240, 255, 0.18);
+  pointer-events: none;
+}
+
+.touch-actions {
+  position: absolute;
+  right: calc(14px + env(safe-area-inset-right, 0px));
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.touch-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.touch-btn {
+  pointer-events: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  padding: 0 6px;
+  border: 1px solid rgba(95, 240, 255, 0.4);
+  border-radius: 50%;
+  background: rgba(6, 16, 28, 0.62);
+  color: var(--cyan);
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 1.1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  backdrop-filter: blur(4px);
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.08s ease, background-color 0.08s ease, border-color 0.08s ease;
+}
+
+.touch-btn.is-pressed {
+  background: rgba(95, 240, 255, 0.24);
+  border-color: rgba(95, 240, 255, 0.85);
+  transform: scale(0.94);
+}
+
+.touch-btn-key {
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+.touch-btn-label {
+  font-size: 8px;
+  opacity: 0.75;
+  letter-spacing: 0.08em;
+}
+
+.touch-boost,
+.touch-jump,
+.touch-repair {
+  width: 56px;
+  height: 56px;
+}
+
+.touch-repair {
+  border-color: rgba(255, 176, 96, 0.55);
+  color: #ffb060;
+}
+
+.touch-interact {
+  width: 78px;
+  height: 78px;
+  border-color: rgba(95, 240, 255, 0.65);
+  background: rgba(10, 32, 50, 0.72);
+}
+
+.touch-interact .touch-btn-key { font-size: 18px; }
+
+.touch-tool {
+  width: auto;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 19px;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.touch-tool .touch-btn-key { font-size: 9px; opacity: 0.7; }
+
+.touch-pause {
+  width: 46px;
+  height: 46px;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+}
+
+/* Reacomodo del HUD cuando el juego corre en modo táctil. */
+body.touch-input .hud-left,
+body.touch-input .hud-right {
+  top: calc(50px + env(safe-area-inset-top, 0px));
+  bottom: auto;
+  width: 112px;
+  transform: none;
+}
+
+body.touch-input .hud-left { left: calc(10px + env(safe-area-inset-left, 0px)); }
+
+body.touch-input .hud-right {
+  right: calc(10px + env(safe-area-inset-right, 0px));
+  text-align: right;
+}
+
+body.touch-input .hud-bottom { display: none; }
+body.touch-input .guide { display: none; }
+body.touch-input .hint { display: none; }
+
+body.touch-input .toast { bottom: calc(214px + env(safe-area-inset-bottom, 0px)); }
+
+@media (max-height: 500px) {
+  body.touch-input .hud-right .stat[data-stat="filters"],
+  body.touch-input .hud-right .stat[data-stat="suit"],
+  body.touch-input .hud-right .nav-stat { display: none; }
+
+  body.touch-input .hud-left,
+  body.touch-input .hud-right { gap: 7px; }
+
+  body.touch-input .stat { padding-top: 4px; padding-bottom: 4px; }
+  body.touch-input .stat-head { margin-bottom: 3px; }
+}
+
+@media (max-height: 430px) {
+  .touch-stick { width: 112px; height: 112px; }
+  .touch-knob { width: 48px; height: 48px; }
+  .touch-actions { gap: 7px; }
+  .touch-row { gap: 7px; }
+  .touch-boost, .touch-jump, .touch-repair { width: 48px; height: 48px; }
+  .touch-interact { width: 66px; height: 66px; }
+  .touch-tool { height: 34px; }
+  .touch-pause { width: 40px; height: 40px; }
+  body.touch-input .toast { bottom: calc(176px + env(safe-area-inset-bottom, 0px)); }
+}
+
+/* Ajustes finos del HUD táctil: tipografía compacta y sin datos secundarios. */
+body.touch-input .hud-top {
+  gap: 8px;
+  padding: calc(8px + env(safe-area-inset-top, 0px)) 10px 0;
+}
+
+body.touch-input .brand {
+  gap: 6px;
+  font-size: 10px;
+  letter-spacing: 0.16em;
+}
+
+body.touch-input .brand-name { white-space: nowrap; }
+
+body.touch-input .objective {
+  max-width: 44vw;
+  padding: 5px 8px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-align: center;
+}
+
+body.touch-input .clock {
+  min-width: 44px;
+  font-size: 11px;
+}
+
+body.touch-input .hud-left,
+body.touch-input .hud-right {
+  width: 128px;
+  gap: 9px;
+}
+
+body.touch-input .stat {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+body.touch-input .stat-head {
+  gap: 6px;
+  margin-bottom: 4px;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+}
+
+body.touch-input .stat-head b {
+  font-size: 10px;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+body.touch-input .hud-right .stat-sub { display: none; }
+body.touch-input .bar { height: 5px; }
+
+.touch-repair .touch-btn-key {
+  font-size: 9px;
+  letter-spacing: 0.03em;
+}

@@ -1,5 +1,6 @@
 /**
- * Entrada unificada: teclado, ratón con Pointer Lock y gamepad estándar.
+ * Entrada unificada: teclado, ratón con Pointer Lock, gamepad estándar y
+ * controles táctiles.
  * No toca el DOM del HUD; sólo expone estado y callbacks.
  */
 export class Controls {
@@ -8,6 +9,12 @@ export class Controls {
     this.keys = new Set();
     this.locked = false;
     this.sensitivity = 0.0024;
+    // En pantallas táctiles no se pide Pointer Lock ni se usan los eventos
+    // sintéticos de ratón: el overlay táctil escribe en `this.touch`.
+    // `window.SPACE_TECH_TOUCH === true` permite forzar el modo táctil
+    // (pruebas automatizadas o equipos híbridos).
+    this.coarsePointer = window.SPACE_TECH_TOUCH === true ||
+      !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
 
     this.mouse = { dx: 0, dy: 0, wheel: 0, left: false, right: false };
     this.clicked = false;
@@ -22,6 +29,13 @@ export class Controls {
     this.padRepairPrev = false;
     this.padInteractPrev = false;
     this.padConnected = false;
+
+    // Estado táctil (TouchControls). Vive aparte del gamepad porque poll()
+    // sobrescribe `pad` en cada frame cuando no hay mando conectado.
+    this.touch = {
+      moveX: 0, moveY: 0, moveZ: 0,
+      boost: false, repair: false, interact: false,
+    };
 
     this.onTool = null;
     this.onLockChange = null;
@@ -61,6 +75,9 @@ export class Controls {
     window.addEventListener('blur', () => this.keys.clear());
 
     canvas.addEventListener('mousedown', (event) => {
+      // En táctil, el navegador emite mousedown sintéticos al tocar el canvas.
+      // Se ignoran para no reparar ni bloquear el puntero por accidente.
+      if (this.coarsePointer) return;
       if (!this.locked) {
         this.requestLock();
         return;
@@ -104,6 +121,9 @@ export class Controls {
 
   requestLock() {
     if (this.locked) return;
+    // En móvil/tableta no existe Pointer Lock útil: la cámara la mueve el
+    // gesto táctil del overlay.
+    if (this.coarsePointer) return;
     const promise = this.canvas.requestPointerLock?.();
     if (promise && typeof promise.catch === 'function') promise.catch(() => {});
   }
@@ -126,6 +146,10 @@ export class Controls {
     y += this.pad.moveY;
     z += this.pad.moveZ;
 
+    x += this.touch.moveX;
+    y += this.touch.moveY;
+    z += this.touch.moveZ;
+
     return {
       x: Math.max(-1, Math.min(1, x)),
       y: Math.max(-1, Math.min(1, y)),
@@ -134,15 +158,15 @@ export class Controls {
   }
 
   get boost() {
-    return this.down('ShiftLeft') || this.down('ShiftRight') || this.pad.boost;
+    return this.down('ShiftLeft') || this.down('ShiftRight') || this.pad.boost || this.touch.boost;
   }
 
   get repairHeld() {
-    return this.mouse.left || this.pad.repair;
+    return this.mouse.left || this.pad.repair || this.touch.repair;
   }
 
   get interactHeld() {
-    return this.down('KeyE') || this.pad.interact;
+    return this.down('KeyE') || this.pad.interact || this.touch.interact;
   }
 
   consumeInteract() {

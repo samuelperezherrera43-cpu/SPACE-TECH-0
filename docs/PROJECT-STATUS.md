@@ -32,10 +32,11 @@ público desplegado**, por lo que no se afirma que funcione entre redes distinta
 
 | Comprobación | Resultado |
 |---|---|
-| `npm run check` | **42/42 archivos válidos** |
+| `npm run check` | **43/43 archivos válidos** |
 | `npm run smoke` | **Superado** (todas las comprobaciones en `ok`, sin fallos) |
 | `npm run server:test` | **11/11 pruebas del servidor superadas** |
 | `npm run server:health` | **`SALUD OK`** contra el servidor local |
+| Modo táctil (Chrome móvil emulado) | **Superado**: joystick, cámara, reparar, usar, herramienta y pausa |
 | Prueba entre redes distintas | **No realizada**; requiere servidor público |
 
 > `node --check` valida sintaxis, no comportamiento. El smoke test valida el
@@ -181,6 +182,40 @@ Además se comprobó:
   configurar `RedisDriver` y `RedisPresence` en `server/index.js`.
 - La reconexión tras recargar depende de `sessionStorage` y de la ventana de 30 s.
 - Guía completa de despliegue: `docs/MULTIPLAYER-DEPLOYMENT.md`.
+
+### 6.1 Despliegue híbrido (Vercel + servidor Colyseus)
+
+- **Vercel** sirve sólo el cliente estático: `public/` como `outputDirectory`
+  (`vercel.json`). No puede hospedar el servidor Node/Colyseus.
+- El servidor multijugador se despliega aparte (Render, Railway, Fly.io o VPS)
+  y su URL HTTPS se declara en `public/config.js` (`multiplayerUrl`).
+- `publicUrl` de `config.js` se usa para enlaces de invitación; nunca debe ser
+  `localhost` en un despliegue público.
+- Con `multiplayerUrl` vacío el cliente usa `localhost:2567` en desarrollo y el
+  mismo origen en producción (requiere proxy inverso hacia Colyseus).
+- **Pendiente de prueba real:** dos dispositivos en redes distintas contra el
+  servidor público. No se declara funcionamiento por Internet hasta entonces.
+
+### 6.2 Soporte móvil y multiplataforma
+
+- `public/js/ui/TouchControls.js`: joystick izquierdo (movimiento), zona derecha
+  (cámara) y botones **E/USAR**, **REPARAR**, **RCS**, **↑** y **HERRAMIENTA**.
+- El estado táctil vive en `Controls.touch` (separado del gamepad, que se
+  sobrescribe en `poll()`), y la cámara reutiliza el acumulador del ratón.
+- En puntero grueso (`pointer: coarse`) no se pide Pointer Lock y se ignoran los
+  eventos sintéticos de ratón sobre el canvas.
+- HUD reacomodado con `body.touch-input` (stats arriba, sin barra de
+  herramientas inferior) y `env(safe-area-inset-*)` para muescas.
+- **Calidad adaptativa** (`Game._adaptQuality`): sólo en táctil, ajusta el pixel
+  ratio entre 0.56 y el perfil estándar; el perfil gráfico sigue siendo único.
+- PWA instalable: `public/manifest.webmanifest`, iconos en `public/assets/` e
+  `apple-touch-icon`. El manifiesto no cachea el juego: sólo instalación.
+- `window.SPACE_TECH_TOUCH = true` fuerza el modo táctil en equipos híbridos o
+  en pruebas automatizadas.
+- Prueba reproducible: `npm run touch:test` (Chrome headless, viewport iPhone,
+  capturas en `.smoke/touch/`).
+- **Pendiente:** probar en Android/iPhone reales, orientación vertical y
+  multitáctil simultáneo (mover + mirar + reparar a la vez).
 
 ---
 

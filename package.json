@@ -9,6 +9,7 @@
     "share": "node scripts/share.mjs",
     "check": "node scripts/check.mjs",
     "smoke": "node scripts/smoke.mjs",
+    "touch:test": "node scripts/touch-smoke.mjs",
     "bench": "node scripts/bench.mjs",
     "build:interior": "node scripts/build-interior.mjs",
     "deploy": "npx wrangler pages deploy public",

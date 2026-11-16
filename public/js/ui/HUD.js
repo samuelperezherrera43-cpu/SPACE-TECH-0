@@ -4,6 +4,13 @@ import { TOOLS } from '../entities/Tool.js';
 const _v = new THREE.Vector3();
 const _camDir = new THREE.Vector3();
 
+// Traducción de teclas de los avisos al overlay táctil.
+const TOUCH_KEY_LABELS = {
+  'CLIC IZQ': 'REPARAR',
+  'CLIC': 'REPARAR',
+  'MANTÉN CLIC': 'MANTÉN REPARAR',
+};
+
 function formatTime(seconds) {
   const total = Math.max(0, Math.floor(seconds));
   const mm = String(Math.floor(total / 60)).padStart(2, '0');
@@ -18,6 +25,9 @@ function formatTime(seconds) {
 export class HUD {
   constructor(root) {
     this.root = root;
+    // Lo activa Game cuando detecta un dispositivo táctil: las teclas de los
+    // avisos se traducen a los botones del overlay.
+    this.touchMode = false;
 
     const $ = (selector) => root.querySelector(selector);
     this.dom = {
@@ -412,8 +422,10 @@ export class HUD {
     this.dom.prompt.classList.remove('hidden');
     this._promptVisible = true;
 
+    const displayKey = this.touchMode ? TOUCH_KEY_LABELS[key] || key : key;
+
     if (this.dom.promptLabel.textContent !== label) this.dom.promptLabel.textContent = label;
-    if (this.dom.promptKey.textContent !== key) this.dom.promptKey.textContent = key;
+    if (this.dom.promptKey.textContent !== displayKey) this.dom.promptKey.textContent = displayKey;
 
     this.dom.promptFill.style.transform = `scaleX(${Math.max(0, Math.min(1, progress))})`;
   }
