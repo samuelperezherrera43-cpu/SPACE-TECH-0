@@ -188,6 +188,8 @@ Render, Railway, Fly.io, Koyeb, VPS con Nginx.
 
 1. Sube el repositorio a GitHub.
 2. Crea un **Web Service** apuntando a la carpeta `server/`.
+   - En Render puedes usar **New → Blueprint** y el `render.yaml` del
+     repositorio, que ya define `rootDir: server`, `npm start` y `/health`.
 3. Build: `npm install`. Start: `npm start`.
 4. Variables:
    - `NODE_ENV=production`
@@ -195,6 +197,10 @@ Render, Railway, Fly.io, Koyeb, VPS con Nginx.
    - `PUBLIC_URL=https://tu-servidor.example.com`
 5. Health check: `/health`.
 6. El proveedor inyecta `PORT`; no lo fijes.
+7. Copia la URL HTTPS resultante en `public/config.js` (`multiplayerUrl`) y
+   vuelve a desplegar el cliente en Vercel.
+8. En el plan gratuito de Render el servicio se suspende por inactividad: la
+   primera conexión puede tardar ~30 s. No lo presentes como "instantáneo".
 
 ### 7.2 VPS con Nginx (WSS/HTTPS)
 

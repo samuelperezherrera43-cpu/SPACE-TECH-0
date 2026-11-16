@@ -189,6 +189,8 @@ Además se comprobó:
   (`vercel.json`). No puede hospedar el servidor Node/Colyseus.
 - El servidor multijugador se despliega aparte (Render, Railway, Fly.io o VPS)
   y su URL HTTPS se declara en `public/config.js` (`multiplayerUrl`).
+- `render.yaml` en la raíz define el blueprint de Render para `server/`
+  (Node 22, `npm start`, health check `/health`).
 - `publicUrl` de `config.js` se usa para enlaces de invitación; nunca debe ser
   `localhost` en un despliegue público.
 - Con `multiplayerUrl` vacío el cliente usa `localhost:2567` en desarrollo y el

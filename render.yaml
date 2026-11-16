@@ -1,0 +1,27 @@
+# Despliegue del servidor multijugador de SPACE-TECH en Render.
+# El cliente (Vercel) se despliega aparte; aquí sólo vive Colyseus.
+#
+# Tras el primer despliegue:
+#   1. Copia la URL pública (https://space-tech-multiplayer.onrender.com).
+#   2. Ponla en public/config.js -> multiplayerUrl.
+#   3. Configura CORS_ORIGIN con el dominio del cliente en Vercel.
+services:
+  - type: web
+    name: space-tech-multiplayer
+    runtime: node
+    rootDir: server
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: NODE_ENV
+        value: production
+      # Dominio exacto del cliente (por ejemplo https://space-tech.vercel.app).
+      - key: CORS_ORIGIN
+        sync: false
+      # URL pública del servidor, usada en los enlaces de invitación.
+      - key: PUBLIC_URL
+        sync: false
